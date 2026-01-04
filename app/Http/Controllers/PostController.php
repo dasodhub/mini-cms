@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Post;
 
+
+
 class PostController extends Controller
 {
     public function index()
@@ -13,7 +15,7 @@ class PostController extends Controller
         return view('posts.index', compact('posts'));
     }
 
-    public function show($post) {
+    public function show(Post $post) {
         return view('posts.show', compact('post'));
     }
 
@@ -35,13 +37,15 @@ class PostController extends Controller
         return redirect()->route('posts.index')->with('success', 'Post created successfully.');
     }
 
-    public function edit($post)
+    public function edit(Post $post)
     {
+        $this->authorize('update', $post);
         return view('posts.edit', compact('post'));
     }
 
-    public function update(Request $request, $post)
+    public function update(Request $request, Post $post)
     {
+        $this->authorize('update', $post);
         $request->validate([
             'title' => 'required|min:3',
             'content' => 'required|min:10',
@@ -52,8 +56,9 @@ class PostController extends Controller
         return redirect()->route('posts.index')->with('success', 'Post updated successfully.');
     }
 
-    public function destroy($post)
+    public function destroy(Post $post)
     {
+        $this->authorize('delete', $post);
         $post->delete();
 
         return redirect()->route('posts.index')->with('success', 'Post deleted successfully.');
