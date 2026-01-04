@@ -24,12 +24,13 @@ class PostController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
             'title' => 'required|min:3',
             'content' => 'required|min:10',
         ]);
 
-        Post::create($request->all());
+        $request->user()->posts()->create($validated);
+
 
         return redirect()->route('posts.index')->with('success', 'Post created successfully.');
     }
